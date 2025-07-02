@@ -3,14 +3,35 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import { type ReactNode } from 'react';
+import { theme, ConfigProvider } from 'antd';
+
+const themeLight = {
+  algorithm: theme.defaultAlgorithm,
+  token: {
+    colorPrimary: '#000',
+    colorBgBase: '#ffffff',
+    colorTextBase: '#1f2937',
+    colorSuccess: '#52c41a',
+    colorWarning: '#faad14',
+    colorError: '#ff4d4f',
+    borderRadius: 4,
+    colorBgContainer: '#fff',
+  },
+};
 
 const AppProvider = ({ children }: { children: ReactNode }) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
   return (
     <BrowserRouter>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <ConfigProvider theme={themeLight}>{children}</ConfigProvider>
         </QueryClientProvider>
       </Provider>
     </BrowserRouter>

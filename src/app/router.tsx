@@ -1,54 +1,45 @@
 import { useRoutes } from 'react-router-dom';
-import Suspense from '@/shared/components/fallback/SuspenseContainer';
 import { lazy } from 'react';
 import ProtectRoute from '@/shared/components/router/ProtectRoute';
 import GuestRoute from '@/shared/components/router/GuestRoute';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store';
+import { Role } from '@/shared/types/auth';
 
 const MainLayout = lazy(() => import('@/layout/MainLayout'));
 const Partner = lazy(() => import('@/features/partner/pages/Partner'));
 const Login = lazy(() => import('@/features/auth/pages/Login'));
 
 const AppRouter = () => {
-  const isAuth = useSelector((state: RootState) => state.auth.isAuth);
+  const isAuth = !!useSelector(
+    (state: RootState) => state.auth.value?.accessToken,
+  );
+
   return useRoutes([
     {
       path: '/',
       element: (
-        <Suspense>
-          <ProtectRoute isAuth={isAuth}>
-            <MainLayout />
-          </ProtectRoute>
-        </Suspense>
+        <ProtectRoute isAuth={isAuth}>
+          <MainLayout />
+        </ProtectRoute>
       ),
       children: [
         {
           path: '',
-          element: (
-            <Suspense>
-              <Partner role="customer" />
-            </Suspense>
-          ),
+          element: <Partner role={Role.customer} />,
         },
         {
           path: '/seller',
-          element: (
-            <Suspense>
-              <Partner role="seller" />
-            </Suspense>
-          ),
+          element: <Partner role={Role.seller} />,
         },
       ],
     },
     {
       path: '/login',
       element: (
-        <Suspense>
-          <GuestRoute isAuth={isAuth}>
-            <Login />
-          </GuestRoute>
-        </Suspense>
+        <GuestRoute isAuth={isAuth}>
+          <Login />
+        </GuestRoute>
       ),
     },
   ]);

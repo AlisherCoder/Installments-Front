@@ -1,31 +1,20 @@
 import React from 'react';
 import type { FormProps } from 'antd';
-import { Button, Form, Input, message } from 'antd';
-import { useLogin } from '../hooks/useLogin';
+import { Alert, Button, Form, Input } from 'antd';
 import { useDispatch } from 'react-redux';
-import type { TokenI } from '@/shared/types/auth';
-import { authLogin } from '../store/auth.slice';
-import { useNavigate } from 'react-router-dom';
-
-type FieldType = {
-  phone: string;
-  password: string;
-};
+import type { LoginI, TokenI } from '@/shared/types/auth';
+import { useAuth } from '../service/login';
+import { setToken } from '../store/auth.slice';
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
-  const navigete = useNavigate();
-  const { login } = useLogin();
+  const { login } = useAuth();
+  const { isPending, isError } = login;
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+  const onFinish: FormProps<LoginI>['onFinish'] = (values) => {
     login.mutate(values, {
       onSuccess: (res: TokenI) => {
-        dispatch(authLogin(res));
-        navigete('/');
-        message.success('Tizimga kirish muvaffaqiyatli bajarildi!');
-      },
-      onError: (e) => {
-        message.error(e.message);
+        dispatch(setToken(res));
       },
     });
   };
@@ -40,7 +29,7 @@ const Login: React.FC = () => {
           autoComplete="off"
           layout="vertical"
         >
-          <Form.Item<FieldType>
+          <Form.Item<LoginI>
             label="Telefon raqam"
             name="phone"
             rules={[
@@ -49,7 +38,7 @@ const Login: React.FC = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item<FieldType>
+          <Form.Item<LoginI>
             label="Parol"
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
@@ -57,8 +46,22 @@ const Login: React.FC = () => {
             <Input.Password />
           </Form.Item>
 
+          {isError && (
+            <div className="mb-4">
+              <Alert
+                message={'username or password is incorrect'}
+                type="error"
+              />
+            </div>
+          )}
+
           <Form.Item style={{ margin: 0 }} label={null}>
-            <Button className="w-full" type="primary" htmlType="submit">
+            <Button
+              loading={isPending}
+              className="w-full"
+              type="primary"
+              htmlType="submit"
+            >
               Submit
             </Button>
           </Form.Item>
