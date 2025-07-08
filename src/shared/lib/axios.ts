@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { TokenI } from '../types/auth';
+import type { TokenI } from '../types/types';
 
 export const api = axios.create({
   baseURL: 'https://telsot.uz/',

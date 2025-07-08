@@ -2,7 +2,7 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Alert, Button, Form, Input } from 'antd';
 import { useDispatch } from 'react-redux';
-import type { LoginI, TokenI } from '@/shared/types/auth';
+import type { LoginI, TokenI } from '@/shared/types/types';
 import { useAuth } from '../service/login';
 import { setToken } from '../store/auth.slice';
 

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { LoginI } from '@/shared/types/auth';
+import type { LoginI } from '@/shared/types/types';
 import { api } from '@/shared/lib/axios';
 
 export const useAuth = () => {

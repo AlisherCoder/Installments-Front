@@ -1,8 +1,13 @@
 import { Button, Table } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { PushpinOutlined } from '@ant-design/icons';
 import React, { type FC } from 'react';
 import './style.css';
 import { useParamsHook } from '@/shared/hooks/useParamsHook';
+import useGetRole from '@/shared/hooks/useGetRole';
+import { Link } from 'react-router-dom';
+import TelPopup from '@/shared/components/tel-popup/TelPopup';
+import PaymentPopup from '@/features/payment/components/payment-popup/PaymentPopup';
+import PartnerOptions from '../partner-options/PartnerOptions';
 
 interface Props {
   data: undefined | any;
@@ -11,6 +16,7 @@ interface Props {
 
 const TableView: FC<Props> = ({ data, loading }) => {
   const { getParam } = useParamsHook();
+  const role = useGetRole();
   const page = getParam('page') || '1';
 
   const columns = [
@@ -18,24 +24,42 @@ const TableView: FC<Props> = ({ data, loading }) => {
       title: '№',
       dataIndex: 'index',
       key: 'index',
-      render: (_value: any, _item: any, index: number) => {
-        return <span>{index + 1 + (Number(page) - 1) * 10}</span>;
+      render: (_value: any, item: any, index: number) => {
+        return (
+          <span>
+            <span>{index + 1 + (Number(page) - 1) * 10}</span>
+            {item.pin && <PushpinOutlined />}
+          </span>
+        );
       },
     },
     {
       title: 'Ism',
       dataIndex: 'fullname',
       key: 'fullname',
+      render: (text: any, item: any) => {
+        return <Link to={`/${role}/${item.id}`}>{text}</Link>;
+      },
     },
     {
       title: 'Manzil',
       dataIndex: 'address',
       key: 'address',
+      render: (text: any) => {
+        return (
+          <span title={text} className="w-[200px] line-clamp-1 ">
+            {text}
+          </span>
+        );
+      },
     },
     {
       title: 'Telefon',
       dataIndex: 'phone',
       key: 'phone',
+      render: (text: string) => {
+        return <TelPopup phoneNumber={text} />;
+      },
     },
     {
       title: 'Balans',
@@ -59,13 +83,13 @@ const TableView: FC<Props> = ({ data, loading }) => {
       title: 'Option',
       dataIndex: 'option',
       key: 'option',
-      render: () => {
+      render: (_text: any, item: any) => {
         return (
           <div className="flex gap-2 justify-end">
-            <Button>To'lov</Button>
-            <Button>
-              <MoreOutlined />
-            </Button>
+            <PaymentPopup role={role} id={item.id}>
+              <Button>To'lov</Button>
+            </PaymentPopup>
+            <PartnerOptions item={item} />
           </div>
         );
       },
@@ -73,7 +97,7 @@ const TableView: FC<Props> = ({ data, loading }) => {
   ];
 
   return (
-    <>
+    <div className="w-full overflow-x-auto">
       <Table
         loading={loading}
         dataSource={data}
@@ -82,7 +106,7 @@ const TableView: FC<Props> = ({ data, loading }) => {
         pagination={false}
         scroll={{ x: 900 }}
       />
-    </>
+    </div>
   );
 };
 

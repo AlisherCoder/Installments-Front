@@ -1,5 +1,5 @@
-import TableView from '../table-view/TableView';
-import CardView from '../card-view/CardView';
+import TableView from './table-view/TableView';
+import CardView from './card-view/CardView';
 import React, { type FC } from 'react';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { Pagination } from 'antd';

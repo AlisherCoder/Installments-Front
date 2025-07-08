@@ -1,17 +1,36 @@
-import { usePartner } from '../service/usePartners';
+import { usePartner, type IParams } from '../service/usePartners';
 import Box from '@/shared/ui/Box';
 import Title from '@/shared/ui/Title';
 import Options from '../components/options';
 import React from 'react';
-import PartnerWrapper from '../components/partner-wrapper/PartnerWrapper';
 import { useParamsHook } from '@/shared/hooks/useParamsHook';
 import { Badge } from 'antd';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const Partner = ({ role }: { role: string }) => {
   const { getPartners } = usePartner();
   const { getParam } = useParamsHook();
   const page = getParam('page') || '1';
-  const { data, isPending } = getPartners({ role, page });
+  const { pathname } = useLocation();
+  const typeName = pathname.split('/')[2] || 'active';
+
+  const query: IParams = {
+    role,
+    page,
+    orderBy: 'desc',
+    isArchive: 'false',
+    isActive: 'true',
+  };
+
+  if (typeName === 'archive') {
+    query.isArchive = 'true';
+  }
+
+  if (typeName === 'disabled') {
+    query.isActive = 'false';
+  }
+
+  const { data, isFetching } = getPartners(query);
 
   return (
     <Box>
@@ -21,7 +40,7 @@ const Partner = ({ role }: { role: string }) => {
         </Title>
       </Badge>
       <Options />
-      <PartnerWrapper data={data} loading={isPending} />
+      <Outlet context={{ data, isFetching }} />
     </Box>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Input, Modal, Form, Select } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { PatternFormat } from 'react-number-format';
-import { Role } from '@/shared/types/auth';
+import { Role } from '@/shared/types/types';
 import { usePartner } from '../../service/usePartners';
 
 type FieldType = {
@@ -44,9 +44,10 @@ const PartnerPopup: React.FC<Props> = ({
       fullname: values.fullname,
       phone: values.phone?.replace(/\s/gi, ''),
       role: values.role,
-      address: values.address,
       regionId: values.regionId,
     };
+
+    if (values.address) newPartner.address = values.address;
 
     if (values.secondPhone) {
       newPartner.secondPhone = values.secondPhone?.replace(/\s/gi, '');

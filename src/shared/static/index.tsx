@@ -20,3 +20,14 @@ export const SIDEBAR_DATA = [
     icon: <UserOutlined className="text-xl" />,
   },
 ];
+
+export const PaymentMethods = [
+  {
+    value: 'CARD',
+    label: 'Karta',
+  },
+  {
+    value: 'CASH',
+    label: 'Naqd',
+  },
+];

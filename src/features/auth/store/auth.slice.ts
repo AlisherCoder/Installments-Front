@@ -1,4 +1,4 @@
-import type { TokenI } from '@/shared/types/auth';
+import type { TokenI } from '@/shared/types/types';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 const auth = localStorage.getItem('auth');

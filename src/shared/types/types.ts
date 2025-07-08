@@ -12,3 +12,8 @@ export enum Role {
   customer = 'CUSTOMER',
   seller = 'SELLER',
 }
+
+export enum PaymentType {
+  in = 'IN',
+  out = 'OUT',
+}
